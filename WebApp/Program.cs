@@ -6,6 +6,7 @@ using RagAppBasic.Models;
 using RagAppBasic.Services;
 using RagAppBasic.Services.Embedding;
 using RagAppBasic.Services.Llm;
+using RagAppBasic.Services.Tools;
 using RagAppBasic.Services.Vector;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,7 @@ builder.Services.Configure<FormOptions>(o =>
 {
     o.MultipartBodyLengthLimit = 1024L * 1024L * 200L; // 200MB
 });
+builder.Services.AddSingleton<SearchDocsTool>();  // tool service
 
 // Embedding provider
 if (cfg.Provider.Equals("OpenAI", StringComparison.OrdinalIgnoreCase))
