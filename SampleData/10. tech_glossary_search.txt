@@ -1,0 +1,5 @@
+Search Glossary (Internal)
+- Keyword Search: matches exact terms; fast; requires query and document share tokens.
+- Semantic Search: uses vector embeddings to capture meaning beyond exact words.
+- Hybrid Search: combines lexical (BM25) and dense (embeddings) scores.
+- Reranker: model that re-orders retrieved passages based on relevance.

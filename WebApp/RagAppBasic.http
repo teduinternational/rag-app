@@ -1,0 +1,21 @@
+@RagAppBasic_HostAddress = https://localhost:7249
+
+### HealthController - Check API keys
+GET {{RagAppBasic_HostAddress}}/health/keys
+Accept: application/json
+
+### QueryController - Ask a question
+POST {{RagAppBasic_HostAddress}}/query
+Content-Type: application/json
+Accept: application/json
+{
+    "question": "When will I receive my refund?",
+    "topK": 3
+}
+
+### IngestController - Upload files for ingestion
+POST {{RagAppBasic_HostAddress}}/ingest/upload
+Content-Type: multipart/form-data
+
+# Example for file upload (use your HTTP client to attach .pdf/.txt/.md files)
+# files: [yourfile.pdf, yourfile.txt]

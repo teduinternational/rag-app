@@ -1,0 +1,5 @@
+Security Best Practices
+- Passwords: minimum 12 characters; prefer passphrases.
+- MFA: mandatory for all external-facing services.
+- Device: auto-lock after 5 minutes idle; disk encryption enabled.
+- Phishing: report suspicious emails to security@example.com.
