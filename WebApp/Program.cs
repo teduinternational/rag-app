@@ -17,9 +17,9 @@ if (builder.Environment.IsDevelopment())
 }
 
 // Load config (appsettings + env)
-var cfg = builder.Configuration.Get<AppConfig>() ?? new AppConfig();
+var configuration = builder.Configuration.Get<AppConfig>() ?? new AppConfig();
 
-builder.Services.AddSingleton(cfg);
+builder.Services.AddSingleton(configuration);
 builder.Services.AddHttpClient();
 
 builder.Services.Configure<FormOptions>(o =>
@@ -29,10 +29,10 @@ builder.Services.Configure<FormOptions>(o =>
 builder.Services.AddSingleton<SearchDocsTool>();  // tool service
 
 // Embedding provider
-if (cfg.Provider.Equals("OpenAI", StringComparison.OrdinalIgnoreCase))
+if (configuration.Provider.Equals("OpenAI", StringComparison.OrdinalIgnoreCase))
 {
-    builder.Services.AddSingleton(new EmbeddingClient(cfg.OpenAI.EmbedModel, cfg.OpenAI.ApiKey));
-    builder.Services.AddSingleton(new ChatClient(cfg.OpenAI.ChatModel, cfg.OpenAI.ApiKey));
+    builder.Services.AddSingleton(new EmbeddingClient(configuration.OpenAI.EmbedModel, configuration.OpenAI.ApiKey));
+    builder.Services.AddSingleton(new ChatClient(configuration.OpenAI.ChatModel, configuration.OpenAI.ApiKey));
     builder.Services.AddSingleton<IEmbeddingProvider, OpenAIEmbeddingProvider>();
     builder.Services.AddSingleton<ILlmChatProvider, OpenAIChatProvider>();
 }
