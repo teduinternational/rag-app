@@ -8,29 +8,29 @@ namespace RagAppBasic.Services.Tools;
 
 public class SearchDocsTool
 {
-    private readonly IEmbeddingProvider _emb;
-    private readonly IQdrantClient _vec;
-    private readonly AppConfig _cfg;
+    private readonly IEmbeddingProvider _embeddingProvider;
+    private readonly IQdrantClient _vectorClient;
+    private readonly AppConfig _appConfig;
 
-    public SearchDocsTool(IEmbeddingProvider emb, IQdrantClient vec, AppConfig cfg)
+    public SearchDocsTool(IEmbeddingProvider embeddingProvider, IQdrantClient vectorClient, AppConfig appConfig)
     {
-        _emb = emb; 
-        _vec = vec; 
-        _cfg = cfg;
+        _embeddingProvider = embeddingProvider; 
+        _vectorClient = vectorClient; 
+        _appConfig = appConfig;
     }
 
-    public async Task<string> InvokeAsync(string query, int? topK, float? minScore, CancellationToken ct = default)
+    public async Task<string> InvokeAsync(string query, int? topK, float? minScore, CancellationToken cancellationToken = default)
     {
-        int dim = await _emb.GetDimAsync(ct);
-        await _vec.EnsureCollectionAsync(dim, ct);
+        int dim = await _embeddingProvider.GetDimAsync(cancellationToken);
+        await _vectorClient.EnsureCollectionAsync(dim, cancellationToken);
 
-        int k = topK ?? _cfg.Rag.TopK;
+        int k = topK ?? _appConfig.Rag.TopK;
         int overfetch = Math.Max(2, k * 3);
 
-        var qvec = await _emb.EmbedAsync(query, ct);
-        var raw = await _vec.SearchAsync(qvec, overfetch, ct);
+        var questionVector = await _embeddingProvider.EmbedAsync(query, cancellationToken);
+        var raw = await _vectorClient.SearchAsync(questionVector, overfetch, cancellationToken);
 
-        float gate = minScore ?? (_cfg.Rag is { } ? _cfg.Rag is { } ? _cfg.Rag.MinScore : 0.0f : 0.0f);
+        float gate = minScore ?? (_appConfig.Rag is { } ? _appConfig.Rag is { } ? _appConfig.Rag.MinScore : 0.0f : 0.0f);
         var passed = raw.Where(h => h.Score >= gate).ToList();
 
         // Dedupe theo hash nội dung chuẩn hóa

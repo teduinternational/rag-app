@@ -7,41 +7,42 @@ namespace RagAppBasic.Services;
 
 public class RagPipeline
 {
-    private readonly IEmbeddingProvider _emb;
-    private readonly ILlmChatProvider _llm;
-    private readonly IQdrantClient _vec;
-    private readonly AppConfig _cfg;
+    private readonly IEmbeddingProvider _embeddingProvider;
+    private readonly ILlmChatProvider _llmProvider;
+    private readonly IQdrantClient _vectorClient;
+    private readonly AppConfig _appConfig;
 
-    public RagPipeline(IEmbeddingProvider emb, ILlmChatProvider llm, IQdrantClient vec, AppConfig cfg)
+    public RagPipeline(IEmbeddingProvider embeddingProvider, 
+        ILlmChatProvider llmProvider, IQdrantClient vectorClient, AppConfig appConfig)
     {
-        _emb = emb; 
-        _llm = llm; 
-        _vec = vec; 
-        _cfg = cfg;
+        _embeddingProvider = embeddingProvider; 
+        _llmProvider = llmProvider; 
+        _vectorClient = vectorClient; 
+        _appConfig = appConfig;
     }
 
     public async Task IngestAsync(IEnumerable<(string text, string? source)> chunks, CancellationToken ct = default)
     {
-        int dim = await _emb.GetDimAsync(ct);
-        await _vec.EnsureCollectionAsync(dim, ct);
+        int dim = await _embeddingProvider.GetDimAsync(ct);
+        await _vectorClient.EnsureCollectionAsync(dim, ct);
 
         var list = new List<VecPoint>();
         foreach (var (text, source) in chunks)
         {
-            var vec = await _emb.EmbedAsync(text, ct);
+            var vec = await _embeddingProvider.EmbedAsync(text, ct);
             list.Add(new VecPoint(Guid.NewGuid().ToString("N"), vec, text, source));
         }
-        await _vec.UpsertAsync(list, ct);
+        await _vectorClient.UpsertAsync(list, ct);
     }
 
-    public async Task<QueryResponse> AskAsync(string question, int? topK, CancellationToken ct = default)
+    public async Task<QueryResponse> AskAsync(string question, int? topK, CancellationToken cancellationToken = default)
     {
-        int dimension = await _emb.GetDimAsync(ct);
-        await _vec.EnsureCollectionAsync(dimension, ct);
+        int dimension = await _embeddingProvider.GetDimAsync(cancellationToken);
+        await _vectorClient.EnsureCollectionAsync(dimension, cancellationToken);
 
-        var qvec = await _emb.EmbedAsync(question, ct);
-        var hits = await _vec.SearchAsync(qvec, topK ?? _cfg.Rag.TopK, ct);
-        var filteredHits = hits.Where(h => h.Score >= _cfg.Rag.MinScore).ToList();
+        var questionVector = await _embeddingProvider.EmbedAsync(question, cancellationToken);
+        var hits = await _vectorClient.SearchAsync(questionVector, topK ?? _appConfig.Rag.TopK, cancellationToken);
+        var filteredHits = hits.Where(h => h.Score >= _appConfig.Rag.MinScore).ToList();
 
         if (filteredHits.Count == 0)
         {
@@ -77,7 +78,7 @@ public class RagPipeline
         // User prompt with question and context
         var user = $"QUESTION:\n{question}\n\nCONTEXT (each block has ID):\n{context}";
 
-        var answer = await _llm.AskAsync(system, user, ct);
+        var answer = await _llmProvider.AskAsync(system, user, cancellationToken);
 
         // Append sources to the answer
         answer += "\n\nSources:\n" + citations;
