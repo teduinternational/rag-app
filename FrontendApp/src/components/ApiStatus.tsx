@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { healthService } from '../services/healthService';
 
 interface ApiStatusProps {
   darkMode?: boolean;
@@ -9,24 +10,9 @@ export const ApiStatus = ({ darkMode = false }: ApiStatusProps) => {
   const [lastChecked, setLastChecked] = useState<Date | null>(null);
 
   const checkApiStatus = async () => {
-    try {
-      const response = await fetch('https://localhost:5154/health/keys', {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-        },
-      });
-      
-      if (response.ok) {
-        setStatus('online');
-      } else {
-        setStatus('offline');
-      }
-    } catch (error) {
-      setStatus('offline');
-    } finally {
-      setLastChecked(new Date());
-    }
+    const result = await healthService.checkHealth();
+    setStatus(result.isOnline ? 'online' : 'offline');
+    setLastChecked(result.timestamp);
   };
 
   useEffect(() => {
