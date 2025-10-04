@@ -12,10 +12,10 @@ export const SampleQuestions = ({ onQuestionSelect, darkMode = false }: SampleQu
     <div className="max-w-4xl mx-auto">
       <div className={`text-center mb-8 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
         <h2 className={`text-lg font-medium mb-2 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-          Câu hỏi mẫu
+          Sample Questions
         </h2>
         <p className="text-sm">
-          Chọn một câu hỏi bên dưới để bắt đầu cuộc trò chuyện
+          Choose a sample question below to start the conversation.
         </p>
       </div>
 

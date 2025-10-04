@@ -39,7 +39,7 @@ export const ChatMessage = ({ message, darkMode = false }: ChatMessageProps) => 
         <div
           className={`px-4 py-3 rounded-2xl shadow-lg ${
             isUser
-              ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-gray-900 rounded-br-sm'
+              ? darkMode ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-br-sm' : 'bg-gradient-to-r from-blue-500 to-blue-600 text-gray-900 rounded-br-sm'
               : darkMode
                 ? 'bg-gradient-to-r from-gray-700 to-gray-600 text-white rounded-bl-sm'
                 : 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-900 rounded-bl-sm border-2 border-gray-300'

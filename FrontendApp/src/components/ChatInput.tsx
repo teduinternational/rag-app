@@ -13,7 +13,7 @@ export const ChatInput = ({
   isLoading, 
   darkMode = false,
   defaultTopK = 5,
-  defaultMinScore = 0.7
+  defaultMinScore = 0.24
 }: ChatInputProps) => {
   const [message, setMessage] = useState('');
   const [showSettings, setShowSettings] = useState(false);
@@ -48,7 +48,7 @@ export const ChatInput = ({
           <h4 className={`text-sm font-medium mb-3 ${
             darkMode ? 'text-gray-200' : 'text-gray-700'
           }`}>
-            Cài đặt tìm kiếm
+            Search Settings
           </h4>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -82,7 +82,7 @@ export const ChatInput = ({
                 max="1"
                 step="0.1"
                 value={minScore}
-                onChange={(e) => setMinScore(parseFloat(e.target.value) || 0.7)}
+                onChange={(e) => setMinScore(parseFloat(e.target.value) || 0.24)}
                 className={`w-full px-3 py-1 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                   darkMode 
                     ? 'bg-gray-600 border-gray-500 text-white' 
@@ -100,7 +100,7 @@ export const ChatInput = ({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Nhập câu hỏi của bạn..."
+            placeholder="Enter your question..."
             disabled={isLoading}
             rows={1}
             className={`w-full px-4 py-3 border rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:cursor-not-allowed transition-colors ${

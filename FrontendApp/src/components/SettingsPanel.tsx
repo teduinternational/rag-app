@@ -48,7 +48,7 @@ export const SettingsPanel = ({
               <h3 className={`text-lg font-medium mb-4 ${
                 darkMode ? 'text-white' : 'text-gray-900'
               }`}>
-                Cài đặt
+                Settings
               </h3>
               
               {/* Dark Mode Toggle */}
@@ -56,7 +56,7 @@ export const SettingsPanel = ({
                 <span className={`text-sm font-medium ${
                   darkMode ? 'text-gray-300' : 'text-gray-700'
                 }`}>
-                  Chế độ tối
+                  Dark Mode
                 </span>
                 <button
                   onClick={onDarkModeToggle}
@@ -78,7 +78,7 @@ export const SettingsPanel = ({
                   <label className={`block text-sm font-medium mb-2 ${
                     darkMode ? 'text-gray-300' : 'text-gray-700'
                   }`}>
-                    Số kết quả tìm kiếm (Top K): {topK}
+                    Number of Results (Top K): {topK}
                   </label>
                   <input
                     type="range"
@@ -86,9 +86,13 @@ export const SettingsPanel = ({
                     max="20"
                     value={topK}
                     onChange={(e) => onTopKChange(parseInt(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                    className={`w-full h-2 rounded-lg appearance-none cursor-pointer ${
+                      darkMode ? 'bg-gray-700' : 'bg-gray-200'
+                    }`}
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <div className={`flex justify-between text-xs mt-1 ${
+                    darkMode ? 'text-gray-400' : 'text-gray-500'
+                  }`}>
                     <span>1</span>
                     <span>20</span>
                   </div>
@@ -98,7 +102,7 @@ export const SettingsPanel = ({
                   <label className={`block text-sm font-medium mb-2 ${
                     darkMode ? 'text-gray-300' : 'text-gray-700'
                   }`}>
-                    Điểm tối thiểu (Min Score): {minScore.toFixed(1)}
+                    Minimum Score (Min Score): {minScore.toFixed(1)}
                   </label>
                   <input
                     type="range"
@@ -107,9 +111,13 @@ export const SettingsPanel = ({
                     step="0.1"
                     value={minScore}
                     onChange={(e) => onMinScoreChange(parseFloat(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                    className={`w-full h-2 rounded-lg appearance-none cursor-pointer ${
+                      darkMode ? 'bg-gray-700' : 'bg-gray-200'
+                    }`}
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <div className={`flex justify-between text-xs mt-1 ${
+                    darkMode ? 'text-gray-400' : 'text-gray-500'
+                  }`}>
                     <span>-1.0</span>
                     <span>1.0</span>
                   </div>
@@ -119,8 +127,8 @@ export const SettingsPanel = ({
               <div className={`mt-4 pt-4 border-t text-xs ${
                 darkMode ? 'border-gray-700 text-gray-400' : 'border-gray-200 text-gray-500'
               }`}>
-                <p><strong>Top K:</strong> Số lượng tài liệu liên quan nhất được trả về</p>
-                <p><strong>Min Score:</strong> Điểm similarity tối thiểu để lọc kết quả</p>
+                <p><strong>Top K:</strong> Number of relevant documents to return</p>
+                <p><strong>Min Score:</strong> Minimum similarity score to filter results</p>
               </div>
             </div>
           </div>

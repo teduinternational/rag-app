@@ -13,7 +13,7 @@ export const Chat = () => {
   const [error, setError] = useState<string | null>(null);
   const [darkMode, setDarkMode] = useState(false);
   const [topK, setTopK] = useState(5);
-  const [minScore, setMinScore] = useState(0.7);
+  const [minScore, setMinScore] = useState(0.24);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -62,7 +62,7 @@ export const Chat = () => {
 
       setMessages(prev => [...prev, assistantMessage]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Có lỗi xảy ra khi gửi tin nhắn');
+      setError(err instanceof Error ? err.message : 'Error occurred');
       console.error('Error:', err);
     } finally {
       setIsLoading(false);
@@ -117,7 +117,7 @@ export const Chat = () => {
                 : 'text-gray-600 border-gray-300 hover:text-gray-800 hover:bg-gray-50'
             }`}
           >
-            Xóa cuộc trò chuyện
+            Clear Chat
           </button>
         </div>
       </div>
@@ -140,7 +140,7 @@ export const Chat = () => {
                 <h3 className={`font-medium ${
                   darkMode ? 'text-red-200' : 'text-red-800'
                 }`}>
-                  Lỗi
+                  Error
                 </h3>
                 <p className={`text-sm mt-1 ${
                   darkMode ? 'text-red-300' : 'text-red-700'
@@ -171,12 +171,12 @@ export const Chat = () => {
                 <h3 className={`text-lg font-medium mb-2 ${
                   darkMode ? 'text-white' : 'text-gray-800'
                 }`}>
-                  Chào mừng đến với RAG Chat Assistant
+                  Welcome to the RAG Chat Assistant
                 </h3>
                 <p className={`max-w-md mx-auto mb-8 ${
                   darkMode ? 'text-gray-400' : 'text-gray-500'
                 }`}>
-                  Hãy bắt đầu cuộc trò chuyện bằng cách gửi một câu hỏi hoặc chọn từ các câu hỏi mẫu bên dưới.
+                  Start the conversation by sending a question or selecting from the sample questions below.
                 </p>
               </div>
               
@@ -214,7 +214,7 @@ export const Chat = () => {
                   <span className={`text-sm ${
                     darkMode ? 'text-gray-300' : 'text-gray-500'
                   }`}>
-                    Đang tìm kiếm...
+                    Searching...
                   </span>
                 </div>
               </div>
