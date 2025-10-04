@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 using OpenAI.Chat;
 using RagAppBasic.Services.Tools;
-using System.Text.Json;
 
 namespace RagAppBasic.Controllers
 {
     public record ToolRagChatRequest(string Message, int? TopK, float? MinScore);
-
 
     [ApiController]
     [Route("chat")]
@@ -22,12 +21,16 @@ namespace RagAppBasic.Controllers
         }
 
         [HttpPost("assist")]
-        public async Task<IActionResult> Assist([FromBody] ToolRagChatRequest req, CancellationToken ct)
+        public async Task<IActionResult> Assist(
+            [FromBody] ToolRagChatRequest req,
+            CancellationToken ct
+        )
         {
             var searchTool = ChatTool.CreateFunctionTool(
                 functionName: nameof(SearchDocsTool),
                 functionDescription: "Semantic vector search over the knowledge base. Returns relevant passages for the user's query.",
-                functionParameters: BinaryData.FromBytes("""
+                functionParameters: BinaryData.FromBytes(
+                    """
                 {
                   "type":"object",
                   "properties":{
@@ -38,20 +41,21 @@ namespace RagAppBasic.Controllers
                   "required":["query"],
                   "additionalProperties": false
                 }
-                """u8.ToArray())
+                """u8.ToArray()
+                )
             );
 
             var messages = new List<ChatMessage>
             {
                 new SystemChatMessage(
-                    "You are a retrieval-augmented assistant. " +
-                    $"Decide when to call {nameof(SearchDocsTool)}. " +
-                    $"If the user query likely needs facts from our knowledge base, call {nameof(SearchDocsTool)} first, " +
-                    "then answer ONLY using returned snippets. " +
-                    "Cite passages inline with [#ordinal] and list sources at the end. " +
-                    $"If {nameof(SearchDocsTool)} returns no hits, say you don't know."
+                    "You are a retrieval-augmented assistant. "
+                        + $"Decide when to call {nameof(SearchDocsTool)}. "
+                        + $"If the user query likely needs facts from our knowledge base, call {nameof(SearchDocsTool)} first, "
+                        + "then answer ONLY using returned snippets. "
+                        + "Cite passages inline with [#ordinal] and list sources at the end. "
+                        + $"If {nameof(SearchDocsTool)} returns no hits, say you don't know."
                 ),
-                new UserChatMessage(req.Message)
+                new UserChatMessage(req.Message),
             };
 
             var options = new ChatCompletionOptions { Tools = { searchTool } };
@@ -71,7 +75,10 @@ namespace RagAppBasic.Controllers
                 {
                     case ChatFinishReason.Stop:
                         messages.Add(new AssistantChatMessage(completion));
-                        var reply = completion.Content != null && completion.Content.Count > 0 ? completion.Content[0].Text : string.Empty;
+                        var reply =
+                            completion.Content != null && completion.Content.Count > 0
+                                ? completion.Content[0].Text
+                                : string.Empty;
                         reply += BuildCitations(lastHits);
                         return Ok(new { reply });
 
@@ -98,28 +105,42 @@ namespace RagAppBasic.Controllers
             try
             {
                 using var resultDoc = JsonDocument.Parse(resultJson);
-                hits = resultDoc.RootElement
-                    .GetProperty("hits")
+                hits = resultDoc
+                    .RootElement.GetProperty("hits")
                     .EnumerateArray()
-                    .Select(h => (
-                        Ordinal: h.GetProperty("ordinal").GetInt32(),
-                        Source: h.GetProperty("source").GetString() ?? "(unknown)",
-                        Score: h.GetProperty("score").GetDouble()
-                    ))
+                    .Select(h =>
+                        (
+                            Ordinal: h.GetProperty("ordinal").GetInt32(),
+                            Source: h.GetProperty("source").GetString() ?? "(unknown)",
+                            Score: h.GetProperty("score").GetDouble()
+                        )
+                    )
                     .ToList();
             }
-            catch { /* ignore parse errors */ }
+            catch
+            { /* ignore parse errors */
+            }
             return hits;
         }
 
         private static string BuildCitations(List<(int Ordinal, string Source, double Score)> hits)
         {
-            if (hits.Count == 0) return string.Empty;
-            return "\n\nSources:\n" + string.Join("\n",
-                hits.Select(h => $"[#${h.Ordinal}] {h.Source} (score={h.Score:0.000})"));
+            if (hits.Count == 0)
+                return string.Empty;
+            return "\n\nSources:\n"
+                + string.Join(
+                    "\n",
+                    hits.Select(h => $"[#${h.Ordinal}] {h.Source} (score={h.Score:0.000})")
+                );
         }
 
-        private async Task HandleToolCall(ChatToolCall call, ToolRagChatRequest req, List<ChatMessage> messages, CancellationToken ct, List<(int Ordinal, string Source, double Score)> lastHits)
+        private async Task HandleToolCall(
+            ChatToolCall call,
+            ToolRagChatRequest req,
+            List<ChatMessage> messages,
+            CancellationToken ct,
+            List<(int Ordinal, string Source, double Score)> lastHits
+        )
         {
             switch (call.FunctionName)
             {
@@ -128,18 +149,38 @@ namespace RagAppBasic.Controllers
                     using (var doc = JsonDocument.Parse(argJson))
                     {
                         var root = doc.RootElement;
-                        string query = root.TryGetProperty("query", out var q) ? q.GetString() ?? "" : "";
-                        int? topK = root.TryGetProperty("topK", out var tk) ? tk.GetInt32() : req.TopK;
-                        float? minScore = root.TryGetProperty("minScore", out var ms) ? (float?)ms.GetDouble() : req.MinScore;
+                        string query = root.TryGetProperty("query", out var q)
+                            ? q.GetString() ?? ""
+                            : "";
+                        int? topK = root.TryGetProperty("topK", out var tk)
+                            ? tk.GetInt32()
+                            : req.TopK;
+                        float? minScore = root.TryGetProperty("minScore", out var ms)
+                            ? (float?)ms.GetDouble()
+                            : req.MinScore;
 
                         string resultJson = await _search.InvokeAsync(query, topK, minScore, ct);
                         lastHits.Clear();
                         lastHits.AddRange(ParseHits(resultJson));
-                        messages.Add(new ToolChatMessage(call.Id, [ChatMessageContentPart.CreateTextPart(resultJson)]));
+                        messages.Add(
+                            new ToolChatMessage(
+                                call.Id,
+                                [ChatMessageContentPart.CreateTextPart(resultJson)]
+                            )
+                        );
                     }
                     break;
                 default:
-                    messages.Add(new ToolChatMessage(call.Id, [ChatMessageContentPart.CreateTextPart($"Unknown tool: {call.FunctionName}")]));
+                    messages.Add(
+                        new ToolChatMessage(
+                            call.Id,
+                            [
+                                ChatMessageContentPart.CreateTextPart(
+                                    $"Unknown tool: {call.FunctionName}"
+                                ),
+                            ]
+                        )
+                    );
                     break;
             }
         }

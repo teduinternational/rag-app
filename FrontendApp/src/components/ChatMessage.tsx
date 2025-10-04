@@ -39,13 +39,13 @@ export const ChatMessage = ({ message, darkMode = false }: ChatMessageProps) => 
         <div
           className={`px-4 py-3 rounded-2xl shadow-lg ${
             isUser
-              ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-br-sm'
+              ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-gray-900 rounded-br-sm'
               : darkMode
-                ? 'bg-gray-700 text-gray-100 rounded-bl-sm'
-                : 'bg-white text-gray-800 rounded-bl-sm border border-gray-200'
+                ? 'bg-gradient-to-r from-gray-700 to-gray-600 text-white rounded-bl-sm'
+                : 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-900 rounded-bl-sm border-2 border-gray-300'
           }`}
         >
-          <div className="whitespace-pre-wrap">{mainContent}</div>
+          <div className="whitespace-pre-wrap font-medium">{mainContent}</div>
           
           {sources.length > 0 && (
             <div className={`mt-3 pt-3 border-t border-opacity-30 ${
@@ -65,17 +65,21 @@ export const ChatMessage = ({ message, darkMode = false }: ChatMessageProps) => 
           )}
         </div>
         
-        <div className={`text-xs mt-1 ${
+        <div className={`text-xs mt-1 font-medium ${
           isUser ? 'text-right' : 'text-left'
-        } ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+        } ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
           {formatTimestamp(message.timestamp)}
         </div>
       </div>
       
-      <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium ml-3 mr-3 ${
-        isUser ? 'bg-blue-500 order-1' : darkMode ? 'bg-gray-600 order-2' : 'bg-gray-400 order-2'
+      <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold ml-3 mr-3 shadow-md ${
+        isUser 
+          ? 'bg-gradient-to-br from-blue-500 to-blue-600 order-1' 
+          : darkMode 
+            ? 'bg-gradient-to-br from-purple-600 to-purple-700 order-2' 
+            : 'bg-gradient-to-br from-purple-500 to-purple-600 order-2'
       }`}>
-        {isUser ? 'U' : 'AI'}
+        {isUser ? '👤' : '🤖'}
       </div>
     </div>
   );

@@ -13,7 +13,10 @@ public class QueryController : ControllerBase
     public QueryController(RagPipeline rag) => _rag = rag;
 
     [HttpPost]
-    public async Task<ActionResult<QueryResponse>> Ask([FromBody] QueryRequest req, CancellationToken ct)
+    public async Task<ActionResult<QueryResponse>> Ask(
+        [FromBody] QueryRequest req,
+        CancellationToken ct
+    )
     {
         if (string.IsNullOrWhiteSpace(req.Question))
             return BadRequest("Question is required.");
