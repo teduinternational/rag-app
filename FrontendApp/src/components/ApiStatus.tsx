@@ -10,7 +10,7 @@ export const ApiStatus = ({ darkMode = false }: ApiStatusProps) => {
 
   const checkApiStatus = async () => {
     try {
-      const response = await fetch('https://localhost:5154/Health', {
+      const response = await fetch('https://localhost:5154/health/keys', {
         method: 'GET',
         headers: {
           'Accept': 'application/json',

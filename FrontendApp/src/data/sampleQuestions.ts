@@ -6,43 +6,68 @@ interface SampleQuestion {
 
 export const sampleQuestions: SampleQuestion[] = [
   {
-    category: "Chính sách",
-    question: "Chính sách đổi trả của công ty như thế nào?",
-    description: "Tìm hiểu về quy định đổi trả sản phẩm"
+    category: "Returns & Refunds",
+    question: "How long do I have to return an item?",
+    description: "Return policy and timeframe information"
   },
   {
-    category: "Chính sách",
-    question: "Chính sách giao hàng có những điều khoản gì?",
-    description: "Thông tin về thời gian và phí giao hàng"
+    category: "Returns & Refunds",
+    question: "When will I receive my refund after a return?",
+    description: "Refund processing time details"
   },
   {
-    category: "Sản phẩm",
-    question: "Máy pha cà phê có những tính năng gì đặc biệt?",
-    description: "Chi tiết về sản phẩm máy pha cà phê"
+    category: "Returns & Refunds",
+    question: "What items are excluded from returns?",
+    description: "Non-returnable items policy"
   },
   {
-    category: "Sản phẩm",
-    question: "Tai nghe có hỗ trợ noise cancelling không?",
-    description: "Tính năng khử tiếng ồn của tai nghe"
+    category: "Shipping",
+    question: "What time do orders need to be placed to ship the same day?",
+    description: "Same-day shipping cutoff time"
   },
   {
-    category: "HR",
-    question: "Quy định về nghỉ phép và ngày lễ như thế nào?",
-    description: "Chính sách PTO và holiday của công ty"
+    category: "Shipping",
+    question: "Do you offer expedited shipping to P.O. Boxes?",
+    description: "Express shipping options for PO Boxes"
   },
   {
-    category: "HR",
-    question: "Chính sách làm việc từ xa ra sao?",
-    description: "Hướng dẫn remote work policy"
+    category: "Shipping",
+    question: "How long does standard shipping take within the U.S.?",
+    description: "Standard delivery timeframe"
   },
   {
-    category: "Kỹ thuật",
-    question: "Làm thế nào để khắc phục sự cố WiFi router?",
-    description: "Hướng dẫn troubleshooting mạng"
+    category: "Shipping",
+    question: "Giao hàng tiêu chuẩn trong bao lâu?",
+    description: "Thời gian giao hàng tiêu chuẩn"
   },
   {
-    category: "Kỹ thuật",
-    question: "Những best practices về bảo mật nào cần tuân thủ?",
-    description: "Quy tắc an ninh thông tin"
+    category: "Product Info",
+    question: "How long is the warranty coverage?",
+    description: "Warranty period and terms"
+  },
+  {
+    category: "Product Info",
+    question: "What is the battery life of H7 with ANC on?",
+    description: "Headphone battery specifications"
+  },
+  {
+    category: "Product Info",
+    question: "How often should I descale the Coffee Maker X100?",
+    description: "Coffee maker maintenance schedule"
+  },
+  {
+    category: "HR Policies",
+    question: "How many PTO days per year do full-time employees get?",
+    description: "Paid time off policy details"
+  },
+  {
+    category: "HR Policies",
+    question: "How many remote work days are allowed per week for eligible roles?",
+    description: "Remote work policy guidelines"
+  },
+  {
+    category: "Technical Support",
+    question: "List the first three steps to troubleshoot the Wi‑Fi router.",
+    description: "Wi-Fi router troubleshooting guide"
   }
 ];
